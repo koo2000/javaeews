@@ -1,4 +1,4 @@
-package com.github.koo2000.sample.javaeeasync;
+package com.github.koo2000.sample.javaeews;
 
 import javax.websocket.Session;
 

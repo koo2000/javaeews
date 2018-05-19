@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+<h2>メッセージ受信
+</h2>
+uid: <input type="text" id="uid"><br/>
+<input type="button" value="メッセージ受信開始" id="startReceiveButton"><br/>
+
+
+<pre id="response_area">
+</pre>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  var ws;
+  var startReceiveFunc = function() {
+    if (ws) {
+      ws.close();
+    }
+    ws = new WebSocket("ws://localhost:8989/pushEndpoint");
+    ws.onopen = function(event) {
+      console.log("@onopen");
+      var uid = document.querySelector('#uid');
+      ws.send("uid:" + uid.value);
+    };
+    ws.onmessage = function(event) {
+      console.log("@onmessage");
+      console.log(event.data);
+      var area = document.querySelector('#response_area');
+      area.innerHTML = area.innerHTML + '<p>' + event.data + '</p>';
+    };
+    ws.onclose = function(event) {
+      console.log("@onclose");
+      alert(
+        'サーバーとの接続が切れました。'
+      );
+      ws = null;
+    };
+  };
+  //-> event
+  var startReceiveButton = document.querySelector('#startReceiveButton');
+  startReceiveButton.onclick = startReceiveFunc;
+
+});
+
+</script>
+</body>
+</html>

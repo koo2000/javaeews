@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+</head>
+<body>
+
+
+dest uid: <input type="text" name="uid" id="uid"> <br/>
+message: <input type="text" name="message" id="message"><br/>
+<br/>
+<input type="button" value="send message" id="sendMessageButton">
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+  var ws = new WebSocket("ws://localhost:8989/messageSendEndpoint");
+    ws.onopen = function(event) {
+    console.log("@onopen");
+  };
+  ws.onmessage = function(event) {
+    console.log("@onmessage");
+    console.log(event.data);
+  };
+  ws.onclose = function(event) {
+    console.log("@onclose");
+    alert(
+      'サーバーとの接続が切れました。\n' +
+      'ページのリロードで再接続します。'
+    );
+  };
+  //-> event
+  var sendMessageButton = document.querySelector('#sendMessageButton');
+  var uid = document.querySelector('#uid');
+  var message = document.querySelector('#message');
+  sendMessageButton.onclick = function() {
+    var msg = uid.value + ':' + message.value;
+    ws.send(msg);
+    console.log("send messege = [" + msg + "]");
+  };
+});
+
+</script>
+</body>
+</html>
